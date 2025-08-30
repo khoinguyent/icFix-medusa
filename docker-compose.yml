@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: icfix-postgres
+    environment:
+      POSTGRES_USER: medusa
+      POSTGRES_PASSWORD: medusa
+      POSTGRES_DB: medusa
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - icfix-network
+
+  # Redis for caching
+  redis:
+    image: redis:7-alpine
+    container_name: icfix-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - icfix-network
+
+  # Medusa Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: icfix-backend
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://medusa:medusa@postgres:5432/medusa
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: your-super-secret-jwt-key
+      COOKIE_SECRET: your-super-secret-cookie-key
+      STORE_CORS: http://localhost:3000
+      ADMIN_CORS: http://localhost:7000
+      AUTH_CORS: http://localhost:3000
+    ports:
+      - "9000:9000"
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - icfix-network
+    command: npm run dev
+
+  # Storefront
+  storefront:
+    build:
+      context: ./storefront
+      dockerfile: Dockerfile
+    container_name: icfix-storefront
+    environment:
+      NEXT_PUBLIC_MEDUSA_BACKEND_URL: http://backend:9000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./storefront:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - icfix-network
+    command: npm run dev
+
+  # Medusa Admin (optional)
+  admin:
+    image: medusajs/admin:latest
+    container_name: icfix-admin
+    environment:
+      MEDUSA_BACKEND_URL: http://backend:9000
+    ports:
+      - "7000:80"
+    depends_on:
+      - backend
+    networks:
+      - icfix-network
+
+volumes:
+  postgres_data:
+
+networks:
+  icfix-network:
+    driver: bridge
