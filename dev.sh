@@ -9,7 +9,7 @@ case "$1" in
     echo "✅ Services started!"
     echo "📊 Backend: http://localhost:9000"
     echo "🛍️  Storefront: http://localhost:3000"
-    echo "⚙️  Admin: http://localhost:7000"
+    echo "⚙️  Admin: http://localhost:7000 (disabled)"
     echo "🗄️  Database: localhost:5432"
     ;;
   "stop")

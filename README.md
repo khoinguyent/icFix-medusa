@@ -16,7 +16,7 @@ icFix-medusa/
 
 - **Backend**: Medusa API server (port 9000)
 - **Storefront**: Next.js frontend (port 3000)
-- **Admin**: Medusa admin panel (port 7000)
+- **Admin**: Medusa admin panel (port 7000) - *temporarily disabled*
 - **PostgreSQL**: Database (port 5432)
 - **Redis**: Caching layer (port 6379)
 
@@ -45,7 +45,7 @@ This will start all services:
 - Database will be available at `localhost:5432`
 - Backend API at `http://localhost:9000`
 - Storefront at `http://localhost:3000`
-- Admin panel at `http://localhost:7000`
+- Admin panel at `http://localhost:7000` (temporarily disabled)
 
 ### 3. View Logs
 

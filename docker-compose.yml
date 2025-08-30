@@ -38,7 +38,7 @@ services:
       JWT_SECRET: your-super-secret-jwt-key
       COOKIE_SECRET: your-super-secret-cookie-key
       STORE_CORS: http://localhost:3000
-      ADMIN_CORS: http://localhost:7000
+      ADMIN_CORS: http://localhost:3000
       AUTH_CORS: http://localhost:3000
     ports:
       - "9000:9000"
@@ -72,18 +72,23 @@ services:
       - icfix-network
     command: npm run dev
 
-  # Medusa Admin (optional)
-  admin:
-    image: medusajs/admin:latest
-    container_name: icfix-admin
-    environment:
-      MEDUSA_BACKEND_URL: http://backend:9000
-    ports:
-      - "7000:80"
-    depends_on:
-      - backend
-    networks:
-      - icfix-network
+  # Medusa Admin (commented out for now - can be added later)
+  # admin:
+  #   image: node:20-alpine
+  #   container_name: icfix-admin
+  #   working_dir: /app
+  #   environment:
+  #     NEXT_PUBLIC_MEDUSA_BACKEND_URL: http://backend:9000
+  #   ports:
+  #     - "7000:3000"
+  #   depends_on:
+  #     - backend
+  #   networks:
+  #     - icfix-network
+  #   volumes:
+  #     - ./admin:/app
+  #     - /app/node_modules
+  #   command: sh -c "npm install && npm run dev"
 
 volumes:
   postgres_data:
