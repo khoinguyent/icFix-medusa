@@ -6,7 +6,10 @@ WORKDIR /app
 
 # Install all dependencies (including dev) for building
 COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
+RUN corepack enable \
+  && corepack prepare yarn@1.22.22 --activate \
+  && yarn --version \
+  && yarn install --frozen-lockfile
 
 ##########
 # build
@@ -23,7 +26,9 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Build the project (outputs to dist/ via medusa build)
-RUN yarn build
+RUN corepack enable \
+  && corepack prepare yarn@1.22.22 --activate \
+  && yarn build
 
 ##########
 # runner
@@ -35,7 +40,9 @@ ENV NODE_ENV=production
 
 # Install only production dependencies
 COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile --production=true \
+RUN corepack enable \
+  && corepack prepare yarn@1.22.22 --activate \
+  && yarn install --frozen-lockfile --production=true \
   && apk add --no-cache curl
 
 # Copy built artifacts and any required runtime files
