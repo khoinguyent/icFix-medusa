@@ -23,6 +23,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Normalize image names (lowercase)
+        id: names
+        shell: bash
+        run: |
+          echo "IMAGE_NAME_LC=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+          repo_name="${GITHUB_REPOSITORY##*/}"
+          echo "REPO_NAME_LC=${repo_name,,}" >> $GITHUB_ENV
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -38,7 +46,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LC }}
           tags: |
             type=ref,event=branch
             type=ref,event=tag
@@ -80,7 +88,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
+            docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.REPO_NAME_LC }}
           tags: |
             type=ref,event=branch
             type=ref,event=tag
