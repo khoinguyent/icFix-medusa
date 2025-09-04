@@ -9,10 +9,6 @@ module.exports = defineConfig({
       ssl: false,
       sslmode: "disable",
     },
-    databaseDriverOptions: {
-      ssl: false,
-      sslmode: "disable",
-    },
     http: {
       storeCors: process.env.STORE_CORS!,
       adminCors: process.env.ADMIN_CORS!,
