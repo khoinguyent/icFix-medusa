@@ -42,13 +42,14 @@ ENV NODE_ENV=production
 COPY package.json yarn.lock ./
 RUN corepack enable \
   && corepack prepare yarn@1.22.22 --activate \
-  && yarn install --frozen-lockfile --production=true \
+  && yarn install --frozen-lockfile --production=false \
   && apk add --no-cache curl
 
 # Copy built artifacts and any required runtime files
 # Medusa outputs compiled server to .medusa
 COPY --from=build /app/.medusa ./.medusa
 COPY medusa-config.ts ./medusa-config.ts
+COPY tsconfig.json ./tsconfig.json
 
 # Expose Medusa port
 EXPOSE 9000
