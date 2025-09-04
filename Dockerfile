@@ -46,7 +46,8 @@ RUN corepack enable \
   && apk add --no-cache curl
 
 # Copy built artifacts and any required runtime files
-COPY --from=build /app/dist ./dist
+# Medusa outputs compiled server to .medusa
+COPY --from=build /app/.medusa ./.medusa
 COPY medusa-config.ts ./medusa-config.ts
 
 # Expose Medusa port
