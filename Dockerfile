@@ -18,6 +18,7 @@ FROM node:20-alpine AS build
 WORKDIR /app
 
 ENV NODE_ENV=production
+ENV ADMIN_DISABLED=true
 ARG BUILD_REV
 
 # Reuse deps from previous stage
@@ -30,9 +31,7 @@ COPY . .
 RUN echo "BUILD_REV=${BUILD_REV}" \
   && corepack enable \
   && corepack prepare yarn@1.22.22 --activate \
-  && yarn build \
-  && ls -lah .medusa/admin || true \
-  && test -f .medusa/admin/index.html
+  && yarn build
 
 ##########
 # runner
@@ -41,6 +40,7 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+ENV ADMIN_DISABLED=true
 
 # Install only production dependencies
 COPY package.json yarn.lock ./
@@ -55,10 +55,6 @@ COPY --from=build /app/.medusa ./.medusa
 COPY medusa-config.ts ./medusa-config.ts
 COPY tsconfig.json ./tsconfig.json
 
-# Entrypoint builds admin if missing (safety net for CI cache issues)
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
 # Expose Medusa port
 EXPOSE 9000
 
@@ -66,7 +62,7 @@ EXPOSE 9000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
   CMD curl -fsS http://localhost:9000/health || exit 1
 
-# Start via entrypoint
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+# Start Medusa server (API-only)
+CMD ["npm", "run", "start"]
 
 
