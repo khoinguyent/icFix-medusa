@@ -15,18 +15,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Normalize image name (lowercase)
-        run: |
-          echo "IMAGE_NAME_LC=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
-
       - name: Docker metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ env.IMAGE_NAME_LC }}
+          images: ghcr.io/${{ github.repository }}
           tags: |
             type=ref,event=branch
             type=ref,event=tag
+            # force 'latest' for pushes to main/master
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' }},priority=100
             type=sha,prefix=sha-,format=short
 
@@ -53,23 +50,38 @@ jobs:
 
   deploy:
     needs: build-and-push
+    # only deploy on main/master; don't reference secrets at job level
     if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' }}
     runs-on: ubuntu-latest
     steps:
+      # Decide if we have all deploy secrets; expose as an output
+      - name: Gate deploy by secrets
+        id: gate
+        run: |
+          ok=true
+          [ -z "${{ secrets.DEPLOY_HOST }}" ] && ok=false
+          [ -z "${{ secrets.DEPLOY_USER }}" ] && ok=false
+          [ -z "${{ secrets.DEPLOY_SSH_KEY }}" ] && ok=false
+          echo "ok=$ok" >> "$GITHUB_OUTPUT"
+
+      - name: Skip (secrets missing)
+        if: ${{ steps.gate.outputs.ok != 'true' }}
+        run: echo "Deploy secrets missing; skipping deploy."
+
       - name: Install SSH key
-        if: ${{ secrets.DEPLOY_HOST != '' && secrets.DEPLOY_USER != '' && secrets.DEPLOY_SSH_KEY != '' }}
+        if: ${{ steps.gate.outputs.ok == 'true' }}
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
 
       - name: Add server to known_hosts
-        if: ${{ secrets.DEPLOY_HOST != '' && secrets.DEPLOY_USER != '' && secrets.DEPLOY_SSH_KEY != '' }}
+        if: ${{ steps.gate.outputs.ok == 'true' }}
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy on server
-        if: ${{ secrets.DEPLOY_HOST != '' && secrets.DEPLOY_USER != '' && secrets.DEPLOY_SSH_KEY != '' }}
+        if: ${{ steps.gate.outputs.ok == 'true' }}
         run: |
           ssh -o StrictHostKeyChecking=no -o BatchMode=yes \
             ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "\
