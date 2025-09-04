@@ -17,4 +17,8 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     }
   },
+  admin: {
+    // Disable admin UI when running API-only
+    disable: process.env.ADMIN_DISABLED === "true" || false,
+  },
 })
