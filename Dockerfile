@@ -55,6 +55,10 @@ COPY --from=build /app/.medusa ./.medusa
 COPY medusa-config.ts ./medusa-config.ts
 COPY tsconfig.json ./tsconfig.json
 
+# Entrypoint builds admin if missing (safety net for CI cache issues)
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 # Expose Medusa port
 EXPOSE 9000
 
@@ -62,7 +66,7 @@ EXPOSE 9000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
   CMD curl -fsS http://localhost:9000/health || exit 1
 
-# Start Medusa server
-CMD ["npm", "run", "start"]
+# Start via entrypoint
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 
