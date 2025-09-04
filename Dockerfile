@@ -18,6 +18,7 @@ FROM node:20-alpine AS build
 WORKDIR /app
 
 ENV NODE_ENV=production
+ARG BUILD_REV
 
 # Reuse deps from previous stage
 COPY --from=deps /app/node_modules ./node_modules
@@ -26,9 +27,12 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Build the project (outputs to dist/ via medusa build)
-RUN corepack enable \
+RUN echo "BUILD_REV=${BUILD_REV}" \
+  && corepack enable \
   && corepack prepare yarn@1.22.22 --activate \
-  && yarn build
+  && yarn build \
+  && ls -lah .medusa/admin || true \
+  && test -f .medusa/admin/index.html
 
 ##########
 # runner
