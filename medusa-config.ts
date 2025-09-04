@@ -9,6 +9,10 @@ module.exports = defineConfig({
       ssl: false,
       sslmode: "disable",
     },
+    databaseDriverOptions: {
+      ssl: false,
+      sslmode: "disable",
+    },
     http: {
       storeCors: process.env.STORE_CORS!,
       adminCors: process.env.ADMIN_CORS!,
@@ -16,5 +20,5 @@ module.exports = defineConfig({
       jwtSecret: process.env.JWT_SECRET || "supersecret",
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     }
-  }
+  },
 })

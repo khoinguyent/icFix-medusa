@@ -13,3 +13,17 @@ coverage
 dist
 build
 
+# Environment files
+.env
+.env.*
+
+# CI/CD and VCS configs (not needed in build context)
+.github/
+.circleci/
+.gitlab-ci.yml
+.azure-pipelines.yml
+
+# Docker/Compose files (optional in build context)
+docker-compose.yml
+docker-compose.*.yml
+
