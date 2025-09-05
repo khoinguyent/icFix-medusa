@@ -28,8 +28,8 @@ module.exports = defineConfig({
         providers: [
           {
             id: "emailpass",
-            type: "emailpass",
             scope: "admin",
+            resolve: "@medusajs/auth-emailpass",
             options: {},
           },
         ],
