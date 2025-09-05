@@ -1,0 +1,32 @@
+name: Test CLI (Yarn)
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+
+jobs:
+  yarn-cli:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+
+      - name: Install deps (Yarn)
+        run: |
+          corepack enable
+          corepack prepare yarn@1.22.22 --activate
+          yarn --version
+          yarn install --frozen-lockfile
+
+      - name: Check CLI tool
+        run: npx -y @medusajs/cli@2.10.0 --version
+
+      - name: Build
+        run: yarn build
+
+
