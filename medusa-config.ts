@@ -1,4 +1,4 @@
-import { loadEnv, defineConfig } from '@medusajs/framework/utils'
+import { loadEnv, defineConfig, Modules } from '@medusajs/framework/utils'
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
@@ -20,5 +20,20 @@ module.exports = defineConfig({
   admin: {
     // Disable admin UI when running API-only
     disable: process.env.ADMIN_DISABLED === "true" || false,
+  },
+  modules: {
+    [Modules.AUTH]: {
+      resolve: "@medusajs/auth",
+      options: {
+        providers: [
+          {
+            id: "emailpass",
+            type: "emailpass",
+            scope: "admin",
+            options: {},
+          },
+        ],
+      },
+    },
   },
 })
