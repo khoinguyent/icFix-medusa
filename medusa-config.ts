@@ -29,12 +29,12 @@ module.exports = defineConfig({
           {
             resolve: "@medusajs/auth-emailpass",
             id: "emailpass",
-            scope: "admin",
+            resources: ["admin"],
             options: {},
           },
           {
             id: "session",
-            scope: "admin",
+            resources: ["admin"],
             options: {
               cookie_name: process.env.SESSION_COOKIE_NAME || "connect.sid",
               secret: process.env.COOKIE_SECRET || "supersecret",
