@@ -15,6 +15,7 @@ module.exports = defineConfig({
       authCors: process.env.AUTH_CORS!,
       jwtSecret: process.env.JWT_SECRET || "supersecret",
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
+      trustProxy: process.env.TRUST_PROXY === "1" || process.env.TRUST_PROXY === "true",
     }
   },
   admin: {
@@ -29,8 +30,18 @@ module.exports = defineConfig({
           {
             id: "emailpass",
             scope: "admin",
-            resolve: "@medusajs/auth-emailpass",
+            type: "emailpass",
             options: {},
+          },
+          {
+            id: "session",
+            scope: "admin",
+            type: "session",
+            options: {
+              cookie_name: process.env.SESSION_COOKIE_NAME || "connect.sid",
+              secret: process.env.COOKIE_SECRET || "supersecret",
+              expires_in: "7d",
+            },
           },
         ],
       },
