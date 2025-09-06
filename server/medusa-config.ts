@@ -17,6 +17,10 @@ module.exports = defineConfig({
     },
     // Optional but useful locally when testing cross-site cookies:
     // cookieOptions: { sameSite: "lax" }, // or "none" with HTTPS+secure
+    cookieOptions: {
+      sameSite: "none",  // required for cross-site cookies
+      secure: false,      // required when sameSite=none
+    },
   },
 
   // Disable bundling/serving Admin at /app
