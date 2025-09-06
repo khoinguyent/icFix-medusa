@@ -15,11 +15,9 @@ module.exports = defineConfig({
       ssl: false,
       sslmode: "disable",
     },
-    // Optional but useful locally when testing cross-site cookies:
-    // cookieOptions: { sameSite: "lax" }, // or "none" with HTTPS+secure
     cookieOptions: {
-      sameSite: "none",  // required for cross-site cookies
-      secure: false,      // required when sameSite=none
+      sameSite: "none",
+      secure: true,
     },
   },
 
@@ -28,19 +26,19 @@ module.exports = defineConfig({
     disable: true,
   },
 
-  // Auth module provider (email+password). It’s registered by default,
-  // but you can override/extend options here if you want.
   modules: [
     {
-      resolve: "@medusajs/medusa/auth",
+      resolve: "@medusajs/auth",
       options: {
         providers: [
           {
-            resolve: "@medusajs/medusa/auth-emailpass",
+            resolve: "@medusajs/auth-emailpass",
             id: "emailpass",
-            options: {
-              // e.g. hashConfig if you want to change scrypt params
-            },
+            options: {},
+          },
+          {
+            id: "session",
+            options: {},
           },
         ],
       },
