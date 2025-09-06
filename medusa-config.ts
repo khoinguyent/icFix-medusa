@@ -1,4 +1,4 @@
-import { loadEnv, defineConfig, Modules } from '@medusajs/framework/utils'
+import { loadEnv, defineConfig, Modules, ContainerRegistrationKeys } from '@medusajs/framework/utils'
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
@@ -21,28 +21,26 @@ module.exports = defineConfig({
     // Disable admin UI when running API-only
     disable: process.env.ADMIN_DISABLED === "true" || false,
   },
-  modules: {
-    [Modules.AUTH]: {
-      resolve: "@medusajs/auth",
+  modules: [
+    {
+      resolve: "@medusajs/medusa/auth",
+      dependencies: [Modules.CACHE, ContainerRegistrationKeys.LOGGER],
       options: {
         providers: [
           {
-            resolve: "@medusajs/auth-emailpass",
+            resolve: "@medusajs/medusa/auth-emailpass",
             id: "emailpass",
-            resources: ["admin"],
-            options: {},
           },
           {
+            resolve: "@medusajs/medusa/auth-session",
             id: "session",
-            resources: ["admin"],
             options: {
               cookie_name: process.env.SESSION_COOKIE_NAME || "connect.sid",
               secret: process.env.COOKIE_SECRET || "supersecret",
-              expires_in: "7d",
             },
           },
         ],
       },
     },
-  },
+  ],
 })

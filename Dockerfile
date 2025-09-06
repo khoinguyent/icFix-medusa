@@ -9,7 +9,7 @@ COPY package.json yarn.lock ./
 RUN corepack enable \
   && corepack prepare yarn@1.22.22 --activate \
   && yarn --version \
-  && yarn install --frozen-lockfile
+  && yarn install
 
 ##########
 # build
@@ -46,7 +46,7 @@ ENV ADMIN_DISABLED=true
 COPY package.json yarn.lock ./
 RUN corepack enable \
   && corepack prepare yarn@1.22.22 --activate \
-  && yarn install --frozen-lockfile --production=false \
+  && yarn install --production=false \
   && apk add --no-cache curl
 
 # Copy built artifacts and any required runtime files
