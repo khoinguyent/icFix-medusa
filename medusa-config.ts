@@ -32,7 +32,6 @@ module.exports = defineConfig({
             id: "emailpass",
           },
           {
-            resolve: "@medusajs/medusa/auth-session",
             id: "session",
             options: {
               cookie_name: process.env.SESSION_COOKIE_NAME || "connect.sid",
