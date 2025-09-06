@@ -5,7 +5,7 @@ FROM node:20-alpine AS deps
 WORKDIR /app
 
 # Install all dependencies (including dev) for building
-COPY package.json yarn.lock ./
+COPY package.json ./
 RUN corepack enable \
   && corepack prepare yarn@1.22.22 --activate \
   && yarn --version \
@@ -43,7 +43,7 @@ ENV NODE_ENV=production
 ENV ADMIN_DISABLED=true
 
 # Install only production dependencies
-COPY package.json yarn.lock ./
+COPY package.json ./
 RUN corepack enable \
   && corepack prepare yarn@1.22.22 --activate \
   && yarn install --production=false \
