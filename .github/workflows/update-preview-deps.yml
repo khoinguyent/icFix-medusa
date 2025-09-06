@@ -20,9 +20,10 @@ jobs:
           node-version: 20
 
       - name: Remove yarn.lock
-        run: rm yarn.lock
+        run: rm server/yarn.lock || true
 
       - name: Install Dependencies
+        working-directory: server
         run: yarn
 
       - name: Close Previous PRs
@@ -62,6 +63,6 @@ jobs:
           branch-suffix: "timestamp"
           token: ${{ secrets.PAT_TOKEN }}
           base: "master"
-          add-paths: yarn.lock
+          add-paths: server/yarn.lock
           committer: "GitHub <noreply@github.com>"
           author: "GitHub <github-actions[bot]@users.noreply.github.com>"

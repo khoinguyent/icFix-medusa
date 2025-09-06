@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: medusa_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: medusa
+      POSTGRES_USER: medusa
+      POSTGRES_PASSWORD: medusa
+    ports: ["5432:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    networks: [medusa_net]
+
+  redis:
+    image: redis:7-alpine
+    container_name: medusa_redis
+    restart: unless-stopped
+    ports: ["6379:6379"]
+    networks: [medusa_net]
+
+  medusa:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: medusa_backend
+    restart: unless-stopped
+    depends_on: [postgres, redis]
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgres://medusa:medusa@postgres:5432/medusa
+      REDIS_URL: redis://redis:6379
+    env_file:
+      - ./server/.env
+    ports: ["9000:9000"]
+    volumes:
+      - ./server:/server
+      - /server/node_modules
+    networks: [medusa_net]
+
+volumes:
+  pgdata:
+
+networks:
+  medusa_net:
+    driver: bridge

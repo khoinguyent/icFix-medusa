@@ -56,30 +56,39 @@ jobs:
           node-version: 20
   
       - name: Install Dependencies
+        working-directory: server
         run: yarn install
 
       - name: Check CLI tool is installed
+        working-directory: server
         run: ./node_modules/.bin/medusa -v
 
       - name: run build
+        working-directory: server
         run: yarn build
 
       - name: Run migrations
+        working-directory: server
         run: npx medusa db:migrate
 
       - name: Run seed
+        working-directory: server
         run: yarn seed
 
       - name: Run development server
+        working-directory: server
         run: yarn dev &
 
       - name: Wait for live server response
-        shell: "bash"
-        run: ./.github/scripts/wait-for-server-live.sh
+        shell: bash
+        run: |
+          for i in {1..60}; do
+            if curl -fsS http://localhost:9000/health >/dev/null; then
+              echo "Server is up"; exit 0; fi; sleep 2; done; exit 1
 
       - name: Kill server
-        shell: "bash"
-        run: kill -9 $(lsof -t -i :9000)
+        shell: bash
+        run: kill -9 $(lsof -t -i :9000) || true
           
   test-cli-npm:
     name: "Test CLI (npm)"
@@ -122,21 +131,27 @@ jobs:
           cache: "npm"
   
       - name: Install Dependencies
+        working-directory: server
         run: npm install
 
       - name: Check CLI tool is installed
+        working-directory: server
         run: ./node_modules/.bin/medusa -v
 
       - name: run medusa build
+        working-directory: server
         run: npm run build
 
       - name: Run migrations
+        working-directory: server
         run: npx medusa db:migrate
 
       - name: Run seed
+        working-directory: server
         run: npm run seed
 
       - name: Run development server
+        working-directory: server
         run: npm run dev -- &
 
       - name: Wait for live server response
@@ -195,21 +210,27 @@ jobs:
           cache: "pnpm"
   
       - name: Install Dependencies
+        working-directory: server
         run: pnpm install
 
       - name: Check CLI tool is installed
+        working-directory: server
         run: ./node_modules/.bin/medusa -v
 
       - name: run medusa build
+        working-directory: server
         run: pnpm run build
 
       - name: Run migrations
+        working-directory: server
         run: npx medusa db:migrate
 
       - name: Run seed
+        working-directory: server
         run: pnpm run seed
 
       - name: Run development server
+        working-directory: server
         run: pnpm run dev -- &
 
       - name: Wait for live server response
