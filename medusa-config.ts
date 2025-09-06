@@ -23,13 +23,10 @@ module.exports = defineConfig({
   },
   modules: [
     {
-      resolve: "@medusajs/medusa/auth",
-      dependencies: [Modules.CACHE, ContainerRegistrationKeys.LOGGER],
+      resolve: "@medusajs/auth",
       options: {
         providers: [
-          {
-            id: "emailpass",
-          },
+          { id: "emailpass" },
           {
             id: "session",
             options: {
