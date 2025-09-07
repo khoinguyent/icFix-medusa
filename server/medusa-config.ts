@@ -1,4 +1,4 @@
-import { loadEnv, defineConfig, Modules, ContainerRegistrationKeys } from "@medusajs/framework/utils"
+import { loadEnv, defineConfig, ContainerRegistrationKeys } from "@medusajs/framework/utils"
 loadEnv(process.env.NODE_ENV || "development", process.cwd())
 
 module.exports = defineConfig({
@@ -28,18 +28,18 @@ module.exports = defineConfig({
 
   modules: [
     {
-      resolve: Modules.CACHE,
+      resolve: "@medusajs/cache-redis",
       options: {
         redisUrl: process.env.REDIS_URL,
       },
     },
     {
       resolve: "@medusajs/medusa/auth",
-      dependencies: [Modules.CACHE, ContainerRegistrationKeys.LOGGER],
+      dependencies: [ContainerRegistrationKeys.LOGGER],
       options: {
         providers: [
           {
-            resolve: "@medusajs/medusa/auth-emailpass",
+            resolve: "@medusajs/auth-emailpass",
             id: "emailpass",
             options: {},
           },
