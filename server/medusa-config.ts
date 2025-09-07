@@ -37,7 +37,7 @@ export default defineConfig({
       resolve: "@medusajs/medusa/auth",
       options: {
         providers: [
-          { resolve: "@medusajs/auth-emailpass", id: "emailpass", actors: ["admin"] },
+          { resolve: "@medusajs/auth-emailpass", id: "emailpass", resources: ["admin"] },
         ],
       },
     },
