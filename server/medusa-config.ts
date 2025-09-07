@@ -28,14 +28,17 @@ module.exports = defineConfig({
 
   modules: [
     {
+      // 👇 add a key
+      key: "cacheService",
       resolve: "@medusajs/cache-redis",
       options: {
         redisUrl: process.env.REDIS_URL,
       },
     },
     {
+      key: "auth",
       resolve: "@medusajs/medusa/auth",
-      dependencies: [ContainerRegistrationKeys.LOGGER],
+      dependencies: [ContainerRegistrationKeys.LOGGER, "cacheService"],
       options: {
         providers: [
           {
