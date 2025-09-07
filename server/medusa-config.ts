@@ -34,9 +34,7 @@ export default defineConfig({
       options: { redisUrl: process.env.REDIS_URL },
     },
     {
-      // IMPORTANT: use @medusajs/auth (not @medusajs/medusa/auth)
-      key: Modules.AUTH,              // or key: "auth"
-      resolve: "@medusajs/auth",
+      resolve: "@medusajs/medusa/auth",
       options: {
         providers: [
           { resolve: "@medusajs/auth-emailpass", id: "emailpass" },
