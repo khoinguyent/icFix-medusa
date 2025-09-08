@@ -1,0 +1,39 @@
+# Ignore node dependencies and caches
+node_modules
+npm-debug.log*
+yarn-error.log*
+.pnpm-store
+.yarn
+.yarn/cache
+
+# Git and editor files
+.git
+.gitignore
+.gitattributes
+.vscode
+.idea
+.DS_Store
+
+# Build outputs
+build
+.dist
+/dist
+/out
+.next
+coverage
+*.map
+
+# Environment and local config
+.env
+.env.*
+*.local
+*.secret
+
+# Docker and compose files from host (not needed in context)
+Dockerfile
+../docker-compose.yml
+
+# Misc
+*.swp
+*.swo
+.tmp
