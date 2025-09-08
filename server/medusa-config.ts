@@ -31,35 +31,15 @@ export default defineConfig({
     {
       key: Modules.CACHE,
       resolve: "@medusajs/cache-redis",
-      options: { redisUrl: process.env.REDIS_URL },
+      options: { redisUrl: process.env.REDIS_URL || "redis://localhost:6379" },
     },
     {
       resolve: "@medusajs/medusa/auth",
       options: {
         providers: [
-          { resolve: "@medusajs/auth-emailpass", id: "emailpass", resources: ["admin"] },
+          { resolve: "@medusajs/auth-emailpass", id: "emailpass", scope: ["admin"] },
         ],
       },
     },
-    // },
-    // {
-    //   key: Modules.CACHE,                // required: gives the module a service key
-    //   resolve: "@medusajs/cache-redis",  // proper Redis cache module
-    //   options: {
-    //     redisUrl: process.env.REDIS_URL, // e.g. redis://redis:6379
-    //   },
-    // },
-    // {
-    //   resolve: "@medusajs/medusa/auth",  // core auth module
-    //   options: {
-    //     providers: [
-    //       {
-    //         resolve: "@medusajs/auth-emailpass", // correct package for v2
-    //         id: "emailpass",
-    //         options: {},
-    //       },
-    //     ],
-    //   },
-    // },
   ],
 })
